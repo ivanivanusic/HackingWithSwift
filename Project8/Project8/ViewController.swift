@@ -18,6 +18,11 @@ class ViewController: UIViewController {
     var activatedButtons = [UIButton]()
     var solutions = [String]()
     
+    var clueString = ""
+    var solutionString = ""
+    var letterBits = [String]()
+    
+    
     var correctAnswersCount = 0
     var score = 0 {
         didSet {
@@ -138,7 +143,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadLevel()
+        performSelector(inBackground: #selector(loadLevel), with: nil)
     }
 
     @objc func letterTapped(_ sender: UIButton) {
@@ -179,7 +184,7 @@ class ViewController: UIViewController {
     func levelUp(action: UIAlertAction) {
         level += 1
         solutions.removeAll(keepingCapacity: true)
-        loadLevel()
+        performSelector(inBackground: #selector(loadLevel), with: nil)
         
         for button in letterButtons {
             button.isHidden = false
@@ -206,10 +211,10 @@ class ViewController: UIViewController {
         activatedButtons.removeAll()
     }
     
-    func loadLevel() {
-        var clueString = ""
-        var solutionString = ""
-        var letterBits = [String]()
+   @objc func loadLevel() {
+        clueString = ""
+        solutionString = ""
+        letterBits = [String]()
         
         if let levelFileURL = Bundle.main.url(forResource: "level\(level)", withExtension: "txt") {
             if let levelContents = try? String(contentsOf: levelFileURL) {
@@ -234,6 +239,10 @@ class ViewController: UIViewController {
             }
         }
         
+    performSelector(onMainThread: #selector(updateUI), with: nil, waitUntilDone: false)
+    }
+    
+    @objc func updateUI() {
         cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
         answersLabel.text = solutionString.trimmingCharacters(in: .whitespacesAndNewlines)
         

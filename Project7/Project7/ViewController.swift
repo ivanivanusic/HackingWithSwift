@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UITableViewController {
     var allPetitions = [Petition]()
     var filteredPetitions = [Petition]()
+    var filter = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +86,8 @@ class ViewController: UITableViewController {
         let submitAction = UIAlertAction(title: "Enter", style: .default) {
             [weak self, weak ac] action in
             guard let answer = ac?.textFields?[0].text else { return }
-            self?.enter(answer)
+            self?.filter = answer
+            self?.enter()
         }
         
         let clearFilters = UIAlertAction(title: "Clear filter", style: .default, handler: clearFilter)
@@ -95,7 +97,18 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
     }
     
-    func enter(_ filter: String) {
+    func enter() {
+        performSelector(inBackground: #selector(filterData), with: nil)
+        tableView.performSelector(onMainThread: #selector(tableView.reloadData), with: nil, waitUntilDone: false)
+    }
+    
+    func clearFilter(alert: UIAlertAction!) {
+        filteredPetitions.removeAll(keepingCapacity: false)
+        filteredPetitions = allPetitions
+        tableView.reloadData()
+    }
+    
+    @objc func filterData() {
         filteredPetitions.removeAll(keepingCapacity: false)
         
         if filter == "" {
@@ -107,14 +120,7 @@ class ViewController: UITableViewController {
                 }
             }
         }
-        
-        tableView.reloadData()
-    }
-    
-    func clearFilter(alert: UIAlertAction!) {
-        filteredPetitions.removeAll(keepingCapacity: false)
-        filteredPetitions = allPetitions
-        tableView.reloadData()
+
     }
 
 }

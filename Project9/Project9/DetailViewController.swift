@@ -1,8 +1,8 @@
 //
 //  DetailViewController.swift
-//  Project7
+//  Project9
 //
-//  Created by Ivan Ivanušić on 25/08/2020.
+//  Created by Ivan Ivanušić on 27/08/2020.
 //  Copyright © 2020 Ivan Ivanušić. All rights reserved.
 //
 
