@@ -10,6 +10,7 @@
         <!--View Controller-->
         <scene sceneID="u4i-lD-8TC">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yGk-iD-b0H" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <collectionViewController id="W5U-E4-xeU" customClass="ViewController" customModule="Project10" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="7ce-dG-Rbl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -57,13 +58,13 @@
                     </collectionView>
                     <navigationItem key="navigationItem" id="fyM-kw-xh7"/>
                 </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yGk-iD-b0H" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1042.0289855072465" y="132.58928571428572"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aPd-Pz-UNp">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="plo-jD-Jgw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="lOw-vO-iGu" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="bmB-Xb-F5V">
@@ -75,7 +76,6 @@
                         <segue destination="W5U-E4-xeU" kind="relationship" relationship="rootViewController" id="TcI-Ra-KSd"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="plo-jD-Jgw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="131.8840579710145" y="132.58928571428572"/>
         </scene>

@@ -45,6 +45,10 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
+        if(UIImagePickerController.isSourceTypeAvailable(.camera)) {
+            picker.sourceType = .camera
+        }
+        
         present(picker, animated: true)
     }
     
@@ -71,18 +75,28 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let person = people[indexPath.item]
         
-        let ac  = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
-        ac.addTextField()
-        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self, weak ac] _ in
-            guard let newName = ac?.textFields?[0].text else { return }
-            person.name = newName
-            self?.collectionView.reloadData()
+        let ac = UIAlertController(title: "Rename or delete person", message: nil, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Rename person", style: .default, handler: { action in
+            let person = self.people[indexPath.item]
+            let ac  = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
+            ac.addTextField()
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self, weak ac] _ in
+                guard let newName = ac?.textFields?[0].text else { return }
+                person.name = newName
+                self?.collectionView.reloadData()
+                
+            }))
+            ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             
+            self.present(ac, animated: true)
         }))
         
-        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        ac.addAction(UIAlertAction(title: "Delete person", style: .default, handler: { action in
+            self.people.remove(at: indexPath.item)
+            collectionView.reloadData()
+        }))
+        
         present(ac, animated: true)
     }
 
