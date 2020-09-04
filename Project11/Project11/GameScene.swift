@@ -10,10 +10,16 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabel: SKLabelNode!
+    var ballsList = [String]()
+    var ballsLeft = 5 {
+        didSet {
+            scoreLabel.text = "Score: \(score), Balls left: \(ballsLeft)"
+        }
+    }
     
     var score = 0 {
         didSet {
-            scoreLabel.text = "Score: \(score)"
+            scoreLabel.text = "Score: \(score), Balls left: \(ballsLeft)"
         }
     }
     
@@ -36,7 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background.zPosition = -1
         addChild(background)
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
-        scoreLabel.text = "Score: 0"
+        scoreLabel.text = "Score: 0, Balls left: 5"
         scoreLabel.horizontalAlignmentMode = .right
         scoreLabel.position = CGPoint(x: 980, y: 700)
         addChild(scoreLabel)
@@ -59,6 +65,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeBouncer(at: CGPoint(x: 512, y: 0))
         makeBouncer(at: CGPoint(x: 768, y: 0))
         makeBouncer(at: CGPoint(x: 1024, y: 0))
+        
+        loadBalls()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -77,15 +85,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
                 box.physicsBody?.isDynamic = false
+                box.name = "box"
                 addChild(box)
             } else {
-                let ball = SKSpriteNode(imageNamed: "ballRed")
-                ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
-                ball.physicsBody?.restitution = 0.4
-                ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
-                ball.position = location
-                ball.name = "ball"
-                addChild(ball)
+                if ballsLeft > 0 {
+                    let ball = SKSpriteNode(imageNamed: ballsList.randomElement()!)
+                    ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
+                    ball.physicsBody?.restitution = 0.4
+                    ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
+                    ball.position.x = location.x
+                    ball.position.y = CGFloat(700)
+                    ball.name = "ball"
+                    ballsLeft -= 1
+                    addChild(ball)
+                } else {
+                    endGame()
+                }
             }
         }
     }
@@ -130,13 +145,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (object.name == "good") {
             destroy(ball: ball)
             score += 1
+            ballsLeft += 1
         } else if (object.name == "bad") {
             destroy(ball: ball)
             score -= 1
+        } else if (object.name == "box") {
+            object.removeFromParent()
         }
     }
     
     func destroy(ball: SKNode) {
+        if let fireParticles = SKEmitterNode(fileNamed: "FireParticles") {
+            fireParticles.position = ball.position
+            addChild(fireParticles)
+        }
         ball.removeFromParent()
     }
     
@@ -149,6 +171,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             collision(between: nodeA, object: nodeB)
         } else if contact.bodyB.node?.name == "ball" {
             collision(between: nodeB, object: nodeA)
+        }
+    }
+    
+    func loadBalls() {
+        ballsList += ["ballBlue", "ballCyan", "ballGreen", "ballGrey", "ballPurple", "ballRed", "ballYellow"]
+    }
+    
+    func endGame() {
+        let ac: UIAlertController
+        if !children.contains(where: {$0.name?.contains("box") ?? false }) {
+            ac = UIAlertController(title: "YOU WON!!", message: nil, preferredStyle: .alert)
+        } else {
+            ac = UIAlertController(title: "YOU LOST!!", message: nil, preferredStyle: .alert)
+        }
+        ac.addAction(UIAlertAction(title: "New game", style: .default, handler: newGame))
+        
+        if let vc = self.scene?.view?.window?.rootViewController {
+            vc.present(ac, animated: true, completion: nil)
+        }
+    }
+    
+    @objc func newGame(action: UIAlertAction) {
+        score = 0
+        ballsLeft = 5
+        
+        for child in children {
+            if child.name == "box" {
+                child.removeFromParent()
+            }
         }
     }
 }
