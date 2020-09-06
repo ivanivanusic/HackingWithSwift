@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var score = 0
     var correctAnswer = 0
     var answeredQuestions = 0
+    var highestScore: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +33,13 @@ class ViewController: UIViewController {
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(shareTapped))
+        
+        let userDefaults = UserDefaults.standard
+        if let loadedScore = userDefaults.object(forKey: "HighestScore") as? Int {
+            highestScore = loadedScore
+        } else {
+            highestScore = 0
+        }
 
         askQuestion()
     }
@@ -65,6 +73,15 @@ class ViewController: UIViewController {
         
         answeredQuestions += 1
         
+        if score > highestScore! {
+            highestScore = score
+            let ac = UIAlertController(title: "New highscore of \(highestScore!)!!", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+
+            saveHighScoreCount()
+            present(ac, animated: true)
+        }
+        
         if answeredQuestions == 10 {
             let ac = UIAlertController(title: "END GAME", message: "Your final score is \(score) of maximum 10", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "New game", style: .default, handler: askQuestion))
@@ -85,6 +102,11 @@ class ViewController: UIViewController {
         vc.addAction(UIAlertAction(title: "Exit", style: .default, handler: nil))
         
         present(vc, animated: true)
+    }
+    
+    func saveHighScoreCount() {
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(highestScore, forKey: "HighestScore")
     }
 
     

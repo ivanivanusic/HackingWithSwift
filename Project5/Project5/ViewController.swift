@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UITableViewController {
     var allWords = [String]()
     var usedWords = [String]()
+    var currentWord: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,11 +30,20 @@ class ViewController: UITableViewController {
             allWords = ["silkworm"]
         }
         
-        startGame()
+        let userDefaults = UserDefaults.standard
+        if let loadWord = userDefaults.object(forKey: "CurrentWord") as? String, let loadUsedWords = userDefaults.object(forKey: "UsedWords") as? [String]{
+            currentWord = loadWord
+            usedWords = loadUsedWords
+            title = currentWord!
+            tableView.reloadData()
+        } else {
+            startGame()
+        }
     }
     
     func startGame() {
-        title = allWords.randomElement()
+        currentWord = allWords.randomElement()
+        title = currentWord!
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
     }
@@ -75,7 +85,7 @@ class ViewController: UITableViewController {
                     usedWords.insert(lowerAnswer, at: 0)
                     let indexPath = IndexPath(row: 0, section: 0)
                     tableView.insertRows(at: [indexPath], with: .automatic)
-                    
+                    saveList()
                     return
                 } else {
                     showErrorMessage(title: "Word not recognized", message: "You can't just make them up, you know!")
@@ -127,6 +137,14 @@ class ViewController: UITableViewController {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
+    }
+    
+    func saveList() {
+        let userDefaults = UserDefaults.standard
+        userDefaults.removeObject(forKey: "CurrentWord")
+        userDefaults.removeObject(forKey: "UsedWords")
+        userDefaults.set(currentWord, forKey: "CurrentWord")
+        userDefaults.set(usedWords, forKey: "UsedWords")
     }
 
 }

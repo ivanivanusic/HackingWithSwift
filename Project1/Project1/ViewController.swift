@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UITableViewController {
     var pictures = [String]()
+    var picturesViewCount = [String: Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +18,9 @@ class ViewController: UITableViewController {
         title = "Storm Viewer"
         navigationController?.navigationBar.prefersLargeTitles = true
         performSelector(inBackground: #selector(loadPictures), with: nil)
+        
+        let userDefaults = UserDefaults.standard
+        picturesViewCount = userDefaults.object(forKey: "ViewCount") as? [String: Int] ?? [String: Int]()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -26,6 +30,7 @@ class ViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Picture", for: indexPath)
         cell.textLabel?.text = pictures[indexPath.row]
+        cell.detailTextLabel?.text = "Times seen:  \(picturesViewCount[pictures[indexPath.row], default: 0])"
         return cell
     }
     
@@ -34,6 +39,9 @@ class ViewController: UITableViewController {
             vc.selectedImage = pictures[indexPath.row]
             vc.selectedImageNumber = indexPath.row + 1
             vc.imagesCount = pictures.count
+            
+            picturesViewCount[pictures[indexPath.row], default: 0] += 1
+            self.saveViewCount()
             
             navigationController?.pushViewController(vc, animated: true)
         }
@@ -54,6 +62,11 @@ class ViewController: UITableViewController {
         
         print(pictures)
         tableView.performSelector(onMainThread: #selector(tableView.reloadData), with: nil, waitUntilDone: false)
+    }
+    
+    func saveViewCount() {
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(picturesViewCount, forKey: "ViewCount")
     }
 }
 
