@@ -12,6 +12,9 @@ import CoreImage
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var intensity: UISlider!
+    @IBOutlet var radius: UISlider!
+    @IBOutlet var filterButton: UIButton!
+    
     var currentImage: UIImage!
     var context: CIContext!
     var currentFilter: CIFilter!
@@ -43,6 +46,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
         
         applyProcessing()
+        applyProcessingRadius()
     }
 
     @IBAction func changeFilter(_ sender: Any) {
@@ -55,11 +59,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         ac.addAction(UIAlertAction(title: "CIUnsharpMask", style: .default, handler: setFilter))
         ac.addAction(UIAlertAction(title: "CIVignette", style: .default, handler: setFilter))
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
         present(ac, animated: true)
     }
     
     @IBAction func save(_ sender: Any) {
-        guard let image = imageView.image else { return }
+        guard let image = imageView.image else {
+            let ac = UIAlertController(title: "No image selected!", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Close", style: .cancel))
+            present(ac, animated: true)
+            return
+        }
         
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
@@ -68,11 +78,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         applyProcessing()
     }
     
+    @IBAction func radiusChanged(_ sender: Any) {
+        applyProcessingRadius()
+    }
+    
+    func applyProcessingRadius() {
+        let inputKeys = currentFilter.inputKeys
+        
+        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(radius.value, forKey: kCIInputRadiusKey) }
+        
+        if let cgimg = context.createCGImage(currentFilter.outputImage!, from: currentFilter.outputImage!.extent) {
+            let processedImage = UIImage(cgImage: cgimg)
+            self.imageView.image = processedImage
+        }
+    }
+    
     func applyProcessing() {
         let inputKeys = currentFilter.inputKeys
 
         if inputKeys.contains(kCIInputIntensityKey) { currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey) }
-        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(intensity.value * 200, forKey: kCIInputRadiusKey) }
         if inputKeys.contains(kCIInputScaleKey) { currentFilter.setValue(intensity.value * 10, forKey: kCIInputScaleKey) }
         if inputKeys.contains(kCIInputCenterKey) { currentFilter.setValue(CIVector(x: currentImage.size.width / 2, y: currentImage.size.height / 2), forKey: kCIInputCenterKey) }
 
@@ -91,7 +115,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let beginImage = CIImage(image: currentImage)
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
         
+        filterButton.setTitle(action.title!, for: .normal)
+        
         applyProcessing()
+        applyProcessingRadius()
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
