@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9923582D250D0F8700C2DB78 /* gameOver.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9923582C250D0F8700C2DB78 /* gameOver.m4a */; };
+		9923582F250D11F400C2DB78 /* smokeParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9923582E250D11F400C2DB78 /* smokeParticles.sks */; };
 		995F3391250C0F4000B6F556 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F3390250C0F4000B6F556 /* AppDelegate.swift */; };
 		995F3393250C0F4000B6F556 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 995F3392250C0F4000B6F556 /* GameScene.sks */; };
 		995F3397250C0F4000B6F556 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F3396250C0F4000B6F556 /* GameScene.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9923582C250D0F8700C2DB78 /* gameOver.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = gameOver.m4a; sourceTree = "<group>"; };
+		9923582E250D11F400C2DB78 /* smokeParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = smokeParticles.sks; sourceTree = "<group>"; };
 		995F338D250C0F4000B6F556 /* Project14.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project14.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		995F3390250C0F4000B6F556 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		995F3392250C0F4000B6F556 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -75,6 +79,8 @@
 				995F33A2250C0F4100B6F556 /* Info.plist */,
 				995F33A9250C106F00B6F556 /* whack.caf */,
 				995F33A8250C106F00B6F556 /* whackBad.caf */,
+				9923582E250D11F400C2DB78 /* smokeParticles.sks */,
+				9923582C250D0F8700C2DB78 /* gameOver.m4a */,
 			);
 			path = Project14;
 			sourceTree = "<group>";
@@ -142,7 +148,9 @@
 				995F3393250C0F4000B6F556 /* GameScene.sks in Resources */,
 				995F339E250C0F4100B6F556 /* Assets.xcassets in Resources */,
 				995F33A1250C0F4100B6F556 /* LaunchScreen.storyboard in Resources */,
+				9923582D250D0F8700C2DB78 /* gameOver.m4a in Resources */,
 				995F33AB250C106F00B6F556 /* whack.caf in Resources */,
+				9923582F250D11F400C2DB78 /* smokeParticles.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
