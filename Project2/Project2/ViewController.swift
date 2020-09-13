@@ -60,6 +60,10 @@ class ViewController: UIViewController {
         var title: String
         var message: String
         
+        UIView.animate(withDuration: 0.5, delay: 0, options: [], animations: {
+            sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+        })
+        
         if sender.tag == correctAnswer {
             title = "Correct"
             score += 1
@@ -69,7 +73,6 @@ class ViewController: UIViewController {
             score -= 1
             message = "Correct answer is \(countries[correctAnswer].uppercased()),\nYour score is \(score)"
         }
-        
         
         answeredQuestions += 1
         
@@ -95,6 +98,7 @@ class ViewController: UIViewController {
             
             present(ac, animated: true)
         }
+        sender.transform = .identity
     }
     
     @objc func shareTapped() {
