@@ -15,6 +15,9 @@ class ViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Map"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Change map", style: .plain, target: self, action: #selector(changeMap))
+        
         let london = Capital(title: "London", coordinate: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), info: "Home to the 2012 Summer Olympics")
         let oslo = Capital(title: "Oslo", coordinate: CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75), info: "Founded over thousand years ago.")
         let paris = Capital(title: "Paris", coordinate: CLLocationCoordinate2D(latitude: 48.8567, longitude: 2.3508), info: "Often called the City of the Light")
@@ -33,7 +36,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
         
         let identifier = "Capital"
         
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
         
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
@@ -41,6 +44,8 @@ class ViewController: UIViewController, MKMapViewDelegate {
             
             let btn = UIButton(type: .detailDisclosure)
             annotationView?.rightCalloutAccessoryView = btn
+            
+            annotationView?.pinTintColor = .blue
         } else {
             annotationView?.annotation = annotation
         }
@@ -56,6 +61,49 @@ class ViewController: UIViewController, MKMapViewDelegate {
         
         let ac = UIAlertController(title: placeName, message: placeInfo, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
+        ac.addAction(UIAlertAction(title: "Wiki", style: .default, handler: {
+            _ in
+            if let vc = self.storyboard?.instantiateViewController(withIdentifier: "Detail") as? DetailViewController {
+                vc.city = placeName
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }))
+        present(ac, animated: true)
+    }
+    
+    @objc func changeMap() {
+        let ac = UIAlertController(title: "Change map", message: "", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Hybrid", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .hybrid
+            self.mapView.reloadInputViews()
+        }))
+        ac.addAction(UIAlertAction(title: "Hybrid Flyover", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .hybridFlyover
+            self.mapView.reloadInputViews()
+        }))
+        ac.addAction(UIAlertAction(title: "Muted Standard", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .mutedStandard
+            self.mapView.reloadInputViews()
+        }))
+        ac.addAction(UIAlertAction(title: "Satellite", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .satellite
+            self.mapView.reloadInputViews()
+        }))
+        ac.addAction(UIAlertAction(title: "Satellite Flyover", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .satelliteFlyover
+            self.mapView.reloadInputViews()
+        }))
+        ac.addAction(UIAlertAction(title: "Standard", style: .default, handler: {
+            _ in
+            self.mapView.mapType = .standard
+            self.mapView.reloadInputViews()
+        }))
+        
         present(ac, animated: true)
     }
 
