@@ -16,6 +16,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var possibleEnemies = ["ball", "hammer", "tv"]
     var gameTimer: Timer?
     var isGameOver = false
+    var currentTimerValue = 1.0
+    var countEnemies = 0 {
+        didSet {
+            if countEnemies != 0 && countEnemies % 20 == 0 {
+                gameTimer?.invalidate()
+                currentTimerValue -= 0.1
+                gameTimer = Timer.scheduledTimer(timeInterval: currentTimerValue, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+            }
+        }
+    }
     
     var score = 0 {
         didSet {
@@ -48,8 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
-        
-        gameTimer = Timer.scheduledTimer(timeInterval: 0.35, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: currentTimerValue, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
     }
     
     @objc func createEnemy() {
@@ -65,7 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sprite.physicsBody?.angularVelocity = 5
         sprite.physicsBody?.linearDamping = 0
         sprite.physicsBody?.angularDamping = 0
-        
+        countEnemies += 1
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -93,12 +102,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.position = location
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        endGame()
+    }
+    
     func didBegin(_ contact: SKPhysicsContact) {
         let explosion = SKEmitterNode(fileNamed: "explosion")!
         explosion.position = player.position
         addChild(explosion)
         
+        endGame()
+    }
+    
+    func endGame() {
         player.removeFromParent()
         isGameOver = true
+        starField.removeFromParent()
+        gameTimer?.invalidate()
+        gameTimer = nil
     }
 }
