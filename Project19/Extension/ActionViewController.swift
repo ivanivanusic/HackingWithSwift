@@ -17,7 +17,10 @@ class ActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
+        let preloadedScrips = UIBarButtonItem(title: "Load", style: .plain, target: self, action: #selector(loadScripts))
+        
+        navigationItem.rightBarButtonItems = [doneButton, preloadedScrips]
 
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -65,5 +68,35 @@ class ActionViewController: UIViewController {
         
         let selectedRange = script.selectedRange
         script.scrollRangeToVisible(selectedRange)
+    }
+    
+    @objc func loadScripts() {
+        let ac = UIAlertController(title: "Select preloaded script:", message: nil, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "Alert test", style: .default, handler: alertTestAction))
+        ac.addAction(UIAlertAction(title: "Alert warning", style: .default, handler: alertWarningAction))
+        ac.addAction(UIAlertAction(title: "Alert HelloWorld", style: .default, handler: alertHelloWorldAction))
+        
+        present(ac, animated: true)
+    }
+    
+    func alertTestAction(action: UIAlertAction) {
+        script.text = """
+            alert("Test")
+            """
+        reloadInputViews()
+    }
+    
+    func alertWarningAction(action: UIAlertAction) {
+        script.text = """
+            alert("Warning")
+            """
+        reloadInputViews()
+    }
+    
+    func alertHelloWorldAction(action: UIAlertAction) {
+        script.text = """
+            alert("Hello, world!")
+            """
+        reloadInputViews()
     }
 }
