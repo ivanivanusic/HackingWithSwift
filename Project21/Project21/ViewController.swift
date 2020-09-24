@@ -9,6 +9,7 @@ import UserNotifications
 import UIKit
 
 class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+    var timeForNotification = 5.00
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +49,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         
 //        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeForNotification, repeats: false)
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         
@@ -60,7 +61,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         center.delegate = self
         
         let show = UNNotificationAction(identifier: "show", title: "Tell me more...", options: .foreground)
-        let category = UNNotificationCategory(identifier: "alarm", actions: [show], intentIdentifiers: [])
+        let reminder = UNNotificationAction(identifier: "reminder", title: "Remind me later", options: [])
+        let category = UNNotificationCategory(identifier: "alarm", actions: [show, reminder], intentIdentifiers: [])
         
         center.setNotificationCategories([category])
         
@@ -71,18 +73,29 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         
         if let customData = userInfo["customData"] as? String {
             print("Custom data recieved \(customData)")
-            
+            var ac: UIAlertController
             switch response.actionIdentifier {
             case UNNotificationDefaultActionIdentifier:
                 // The user swiped to unlock
                 print("Default identifier")
+                ac = UIAlertController(title: "Default handler", message: nil, preferredStyle: .alert)
                 
             case "show":
                 print("Show more information.")
+                ac = UIAlertController(title: "Show handler", message: nil, preferredStyle: .alert)
+                
+            case "reminder":
+                print("Reminder for tomorrow")
+                timeForNotification = 86400.00
+                scheduleLocal()
+                ac = UIAlertController(title: "Reminder handler", message: nil, preferredStyle: .alert)
                 
             default:
+                ac = UIAlertController(title: "Other handler", message: nil, preferredStyle: .alert)
                 break
             }
+            ac.addAction(UIAlertAction(title: "Exit", style: .cancel, handler: nil))
+            present(ac, animated: true)
         }
         completionHandler()
     }
