@@ -16,18 +16,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="UNKNOWN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xKO-ao-jAb">
-                                <rect key="frame" x="105" y="424" width="204" height="48"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UNKNOWN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xKO-ao-jAb">
+                                <rect key="frame" x="105" y="590" width="204" height="48"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gCl-z9-n2U">
+                                <rect key="frame" x="183" y="646" width="48" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N1h-zL-LyX">
+                                <rect key="frame" x="79" y="125" width="256" height="256"/>
+                                <color key="backgroundColor" systemColor="systemRedColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="256" id="gus-3d-oWY"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="gCl-z9-n2U" secondAttribute="bottom" constant="192" id="1dz-PN-KUI"/>
+                            <constraint firstItem="N1h-zL-LyX" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="81" id="8de-Tx-rHF"/>
+                            <constraint firstItem="N1h-zL-LyX" firstAttribute="centerX" secondItem="xKO-ao-jAb" secondAttribute="centerX" id="C2U-k7-ue0"/>
+                            <constraint firstItem="gCl-z9-n2U" firstAttribute="top" secondItem="xKO-ao-jAb" secondAttribute="bottom" constant="8" id="Y4r-Lc-uee"/>
+                            <constraint firstItem="N1h-zL-LyX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="79" id="c8j-n8-SBV"/>
+                            <constraint firstItem="N1h-zL-LyX" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="hQP-hJ-ffQ"/>
+                            <constraint firstItem="xKO-ao-jAb" firstAttribute="centerX" secondItem="gCl-z9-n2U" secondAttribute="centerX" id="iWg-sc-8aD"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="beaconName" destination="gCl-z9-n2U" id="cVh-KF-fyP"/>
+                        <outlet property="circle" destination="N1h-zL-LyX" id="1Hl-uc-DMu"/>
                         <outlet property="distanceReading" destination="xKO-ao-jAb" id="kxt-Hd-TDX"/>
                     </connections>
                 </viewController>
@@ -39,6 +62,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

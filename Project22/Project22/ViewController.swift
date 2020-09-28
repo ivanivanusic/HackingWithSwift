@@ -10,7 +10,10 @@ import UIKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet var distanceReading: UILabel!
+    @IBOutlet var beaconName: UILabel!
+    @IBOutlet var circle: UIImageView!
     var locationManager: CLLocationManager?
+    var isAlertShown = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +22,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager?.delegate = self
         locationManager?.requestAlwaysAuthorization()
         
-        view.backgroundColor = .gray
+        beaconName.isHidden = true
+        beaconName.layer.zPosition = 1
+        distanceReading.layer.zPosition = 1
+        circle.layer.cornerRadius = 128
+        circle.layer.transform = CATransform3DMakeScale(0.001, 0.001, 1)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -34,9 +41,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         if let beacon = beacons.first {
+            if !isAlertShown {
+                let ac = UIAlertController(title: "First beacon detected", message: nil, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                present(ac, animated: true)
+                isAlertShown = true
+            }
+            beaconName.text = beacon.proximityUUID.uuidString
+            beaconName.isHidden = false
             update(distance: beacon.proximity)
         } else {
             update(distance: .unknown)
+            beaconName.isHidden = true
         }
     }
     
@@ -52,23 +68,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         UIView.animate(withDuration: 1) {
             switch distance {
             case .unknown:
-                self.view.backgroundColor = UIColor.gray
+                self.circle.layer.transform = CATransform3DMakeScale(0.001, 0.001, 1)
                 self.distanceReading.text = "UNKNOWN"
 
             case .far:
-                self.view.backgroundColor = UIColor.blue
+                self.circle.layer.transform = CATransform3DMakeScale(0.25, 0.25, 1)
                 self.distanceReading.text = "FAR"
 
             case .near:
-                self.view.backgroundColor = UIColor.orange
+                self.circle.layer.transform = CATransform3DMakeScale(0.5, 0.5, 1)
                 self.distanceReading.text = "NEAR"
 
             case .immediate:
-                self.view.backgroundColor = UIColor.red
+                self.circle.layer.transform = CATransform3DMakeScale(1, 1, 1)
                 self.distanceReading.text = "RIGHT HERE"
                 
             default:
-                self.view.backgroundColor = UIColor.gray
+                self.circle.layer.transform = CATransform3DMakeScale(0.65, 0.65, 1)
                 self.distanceReading.text = "UNKNOWN"
             }
         }
