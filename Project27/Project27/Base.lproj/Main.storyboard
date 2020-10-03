@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="ipad10_2" orientation="portrait" layout="fullscreen" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Project27" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="810" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tYh-FI-WM1">
+                                <rect key="frame" x="0.0" y="-44" width="810" height="1168"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k8k-uW-sRS">
+                                <rect key="frame" x="379" y="1050" width="52" height="30"/>
+                                <state key="normal" title="Redraw"/>
+                                <connections>
+                                    <action selector="redrawTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="58G-Uf-ZDO"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="k8k-uW-sRS" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="990-8x-nMd"/>
+                            <constraint firstItem="tYh-FI-WM1" firstAttribute="centerX" secondItem="k8k-uW-sRS" secondAttribute="centerX" id="OPP-Yk-u2A"/>
+                            <constraint firstItem="tYh-FI-WM1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="QHf-WZ-UdP"/>
+                            <constraint firstItem="tYh-FI-WM1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ZXb-6U-lBc"/>
+                            <constraint firstItem="tYh-FI-WM1" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="-44" id="eWN-1e-hbK"/>
+                            <constraint firstItem="tYh-FI-WM1" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="zTy-S7-GNt"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="tYh-FI-WM1" id="cue-Hb-CQE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="95.758928571428569"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
