@@ -15,6 +15,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Nothing to see here"
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(saveSecretMessage))
 
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -34,14 +36,23 @@ class ViewController: UIViewController {
                     if success {
                         self?.unlockSecretMessage()
                     } else {
-                        let ac = UIAlertController(title: "Authentication failed", message: "You could not be verified, please try again! ", preferredStyle: .alert)
-                        ac.addAction(UIAlertAction(title: "OK", style: .default))
+                        let ac = UIAlertController(title: "Authentication failed", message: "You could not be verified, enter a password! ", preferredStyle: .alert)
+                        ac.addTextField()
+                        let submitAction = UIAlertAction(title: "Enter", style: .default) {
+                            [weak self, weak ac] action in
+                            guard let answer = ac?.textFields?[0].text else { return }
+                            
+                            if KeychainWrapper.standard.string(forKey: "password") == answer {
+                                self?.unlockSecretMessage()
+                            }
+                        }
+                        ac.addAction(submitAction)
                         self?.present(ac, animated: true)
                     }
                 }
             }
         } else {
-            let ac = UIAlertController(title: "Biometric unavailable", message: "Your device is not configured for biometrix authentication", preferredStyle: .alert)
+            let ac = UIAlertController(title: "Biometric unavailable", message: "Your device is not configured for biometrix authentication, enter the password!", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
         }
@@ -76,6 +87,7 @@ class ViewController: UIViewController {
         guard secret.isHidden == false else { return }
         
         KeychainWrapper.standard.set(secret.text, forKey: "SecretMessage")
+        KeychainWrapper.standard.set("1234", forKey: "password")
         secret.resignFirstResponder()
         secret.isHidden = true
         title = "Nothing to see here"
