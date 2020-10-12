@@ -22,6 +22,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var player2: SKSpriteNode!
     var banana: SKSpriteNode!
     var currentPlayer = 1
+    var player1Score = 0
+    var player2Score = 0
     
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(hue: 0.669, saturation: 0.99, brightness: 0.67, alpha: 1)
@@ -78,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let impulse = CGVector(dx: cos(radians) * speed, dy: sin(radians) * speed)
             banana.physicsBody?.applyImpulse(impulse)
         } else {
-            banana.position = CGPoint(x: player2.position.x + 30, y: player1.position.y + 40)
+            banana.position = CGPoint(x: player2.position.x + 30, y: player2.position.y + 40)
             banana.physicsBody?.angularVelocity = 20
             
             let raiseArm = SKAction.setTexture(SKTexture(imageNamed: "player2Throw"))
@@ -143,10 +145,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if firstNode.name == "banana" && secondNode.name == "player1" {
+            player2Score += 1
             destroy(player: player1)
         }
         
         if firstNode.name == "banana" && secondNode.name == "player2" {
+            player1Score += 1
             destroy(player: player2)
         }
     }
@@ -160,16 +164,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.removeFromParent()
         banana.removeFromParent()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let newGame = GameScene(size: self.size)
-            newGame.viewController = self.viewController
-            self.viewController?.currentGame = newGame
+        if !isGameEnd() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                let newGame = GameScene(size: self.size)
+                newGame.viewController = self.viewController
+                self.viewController?.currentGame = newGame
+                
+                self.changePlayer()
+                newGame.currentPlayer = self.currentPlayer
+                
+                let transition = SKTransition.doorway(withDuration: 1.5)
+                self.view?.presentScene(newGame, transition: transition)
+            }
+        } else {
+            viewController?.playerNumber.isHidden = true
+            self.removeAllChildren()
             
-            self.changePlayer()
-            newGame.currentPlayer = self.currentPlayer
-            
-            let transition = SKTransition.doorway(withDuration: 1.5)
-            self.view?.presentScene(newGame, transition: transition)
+            let ac = UIAlertController(title: "GAME OVER", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self.viewController?.present(ac, animated: true)
         }
     }
     
@@ -208,6 +221,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             banana = nil
             changePlayer()
         }
+    }
+    
+    func isGameEnd() -> Bool {
+        if player1Score >= 3 || player2Score >= 3 {
+            print("Game over")
+            return true
+        }
+        
+        return false
     }
 }
 
