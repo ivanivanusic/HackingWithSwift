@@ -10,8 +10,8 @@ import UIKit
 
 class SelectionViewController: UITableViewController {
 	var items = [String]() // this is the array that will store the filenames to load
-	var viewControllers = [UIViewController]() // create a cache of the detail view controllers for faster loading
 	var dirty = false
+    var renderedList = [UIImage]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,14 +24,16 @@ class SelectionViewController: UITableViewController {
 
 		// load all the JPEGs into our array
 		let fm = FileManager.default
+        guard let path = Bundle.main.resourcePath else { return }
 
-		if let tempItems = try? fm.contentsOfDirectory(atPath: Bundle.main.resourcePath!) {
+		if let tempItems = try? fm.contentsOfDirectory(atPath: path) {
 			for item in tempItems {
 				if item.range(of: "Large") != nil {
 					items.append(item)
 				}
 			}
 		}
+        render()
     }
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -61,28 +63,14 @@ class SelectionViewController: UITableViewController {
 
 		// find the image for this cell, and load its thumbnail
 		let currentImage = items[indexPath.row % items.count]
-		let imageRootName = currentImage.replacingOccurrences(of: "Large", with: "Thumb")
-		let path = Bundle.main.path(forResource: imageRootName, ofType: nil)!
-		let original = UIImage(contentsOfFile: path)!
-
-        let renderRect = CGRect(origin: .zero, size: CGSize(width: 90, height: 90))
-		let renderer = UIGraphicsImageRenderer(size: renderRect.size)
-
-		let rounded = renderer.image { ctx in
-            ctx.cgContext.addEllipse(in: renderRect)
-			ctx.cgContext.clip()
-
-            original.draw(in: renderRect)
-		}
-
-		cell.imageView?.image = rounded
+        let image = renderedList[indexPath.row % items.count]
+        cell.imageView?.image = image
 
 		// give the images a nice shadow to make them look a bit more dramatic
 		cell.imageView?.layer.shadowColor = UIColor.black.cgColor
 		cell.imageView?.layer.shadowOpacity = 1
 		cell.imageView?.layer.shadowRadius = 10
 		cell.imageView?.layer.shadowOffset = CGSize.zero
-        cell.imageView?.layer.shadowPath = UIBezierPath(ovalIn: renderRect).cgPath
 
 		// each image stores how often it's been tapped
 		let defaults = UserDefaults.standard
@@ -100,7 +88,27 @@ class SelectionViewController: UITableViewController {
 		dirty = false
 
 		// add to our view controller cache and show
-		viewControllers.append(vc)
-		navigationController!.pushViewController(vc, animated: true)
+        guard let navigationController = navigationController else { return }
+		navigationController.pushViewController(vc, animated: true)
 	}
+    
+    func render() {
+        for item in items {
+            let currentImage = item
+            let imageRootName = currentImage.replacingOccurrences(of: "Large", with: "Thumb")
+            guard let path = Bundle.main.path(forResource: imageRootName, ofType: nil) else { return }
+            guard let original = UIImage(contentsOfFile: path) else { return }
+
+            let renderRect = CGRect(origin: .zero, size: CGSize(width: 90, height: 90))
+            let renderer = UIGraphicsImageRenderer(size: renderRect.size)
+
+            let rounded = renderer.image { ctx in
+                ctx.cgContext.addEllipse(in: renderRect)
+                ctx.cgContext.clip()
+
+                original.draw(in: renderRect)
+            }
+            renderedList.append(rounded)
+        }
+    }
 }
